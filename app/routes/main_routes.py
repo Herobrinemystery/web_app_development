@@ -1,4 +1,5 @@
 from flask import Blueprint, render_template
+from app.models.recipe import Recipe
 
 main_bp = Blueprint('main', __name__)
 
@@ -9,4 +10,5 @@ def index():
     處理邏輯：呼叫 Recipe.get_all(public_only=True)
     輸出：渲染 templates/index.html
     """
-    pass
+    recipes = Recipe.get_all(public_only=True)
+    return render_template('index.html', recipes=recipes)

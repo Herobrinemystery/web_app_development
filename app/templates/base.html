@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}食譜收藏夾{% endblock %}</title>
+    <meta name="description" content="你的專屬食譜寶庫，透過現有食材發掘美味靈感。">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <nav class="navbar">
+        <a href="{{ url_for('main.index') }}" class="navbar-brand">RecipeVault</a>
+        <div class="nav-links">
+            <a href="{{ url_for('main.index') }}">探索食譜</a>
+            {% if session.get('user_id') %}
+                <a href="{{ url_for('recipes.my_recipes') }}">我的食譜</a>
+                <a href="{{ url_for('recipes.new_recipe') }}">新增食譜</a>
+                <a href="{{ url_for('auth.logout') }}">登出 ({{ session.get('username') }})</a>
+            {% else %}
+                <a href="{{ url_for('auth.login') }}">登入</a>
+                <a href="{{ url_for('auth.register') }}" class="btn">免費註冊</a>
+            {% endif %}
+        </div>
+    </nav>
+
+    <main class="container">
+        <!-- Flash Messages -->
+        <div class="flash-messages">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="flash {{ category if category != 'message' else 'info' }}">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+        </div>
+
+        {% block content %}{% endblock %}
+    </main>
+
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

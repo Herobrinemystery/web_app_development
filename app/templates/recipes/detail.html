@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block title %}{{ recipe.title }} - RecipeVault{% endblock %}
+
+{% block content %}
+<div class="glass-card" style="max-width: 800px; margin: 0 auto;">
+    
+    <div style="display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 1px solid var(--glass-border); padding-bottom: 1.5rem; margin-bottom: 2rem;">
+        <div>
+            <h1 style="margin: 0 0 0.5rem 0; font-size: 2.5rem; background: linear-gradient(to right, #3b82f6, #10b981); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+                {{ recipe.title }}
+            </h1>
+            <div style="color: #94a3b8; font-size: 0.95rem; display: flex; gap: 1rem; align-items: center;">
+                <span>發布時間：{{ recipe.created_at[:10] }}</span>
+                {% if recipe.is_public %}
+                    <span style="background: rgba(16, 185, 129, 0.2); color: #34d399; padding: 0.15rem 0.6rem; border-radius: 99px; font-size: 0.8rem;">公開分享</span>
+                {% else %}
+                    <span style="background: rgba(255, 255, 255, 0.1); color: #cbd5e1; padding: 0.15rem 0.6rem; border-radius: 99px; font-size: 0.8rem;">私有食譜</span>
+                {% endif %}
+            </div>
+        </div>
+        
+        {% if session.get('user_id') == recipe.user_id %}
+            <a href="{{ url_for('recipes.edit_recipe', recipe_id=recipe.id) }}" class="btn" style="background: rgba(255, 255, 255, 0.15);">✏️ 編輯</a>
+        {% endif %}
+    </div>
+
+    {% if recipe.ingredients %}
+    <div style="background: rgba(0, 0, 0, 0.2); border-radius: 12px; padding: 1.5rem; margin-bottom: 2rem;">
+        <h3 style="margin-top: 0; color: var(--accent); margin-bottom: 1rem;">所需食材</h3>
+        <div style="display: flex; flex-wrap: wrap; gap: 0.75rem;">
+            {% for ing in recipe.ingredients %}
+                <span style="background: rgba(255, 255, 255, 0.05); border: 1px solid var(--glass-border); padding: 0.5rem 1rem; border-radius: 8px;">
+                    {{ ing.name }}
+                </span>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    <div>
+        <h3 style="color: var(--primary); margin-bottom: 1rem;">製作步驟</h3>
+        <div style="line-height: 1.8; color: var(--text-color); font-size: 1.1rem; white-space: pre-wrap;">{{ recipe.steps }}</div>
+    </div>
+    
+    <div style="margin-top: 4rem; text-align: center;">
+        <a href="{{ url_for('main.index') }}" style="color: #94a3b8; text-decoration: none;">← 回到首頁探索</a>
+    </div>
+
+</div>
+{% endblock %}

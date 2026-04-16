@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+
+{% block title %}搜尋結果 - RecipeVault{% endblock %}
+
+{% block content %}
+<div style="margin-bottom: 2rem;">
+    <h2>食材搜尋結果</h2>
+    
+    <div class="glass-card" style="padding: 1.5rem; margin-bottom: 2rem; display: flex; align-items: center; gap: 1rem;">
+        <span style="color: #94a3b8;">您剛搜尋的食材：</span>
+        {% if query %}
+            <span style="background: rgba(16, 185, 129, 0.2); border: 1px solid var(--accent); color: #34d399; padding: 0.5rem 1rem; border-radius: 8px; font-weight: 600;">{{ query }}</span>
+        {% else %}
+            <span style="color: #cbd5e1; font-style: italic;">沒有設定任何條件</span>
+        {% endif %}
+            
+        <form action="{{ url_for('recipes.search') }}" method="GET" style="display: flex; gap: 1rem; margin-left: auto;">
+            <input type="text" name="q" class="form-control" placeholder="重新搜尋 (例如: 豬肉, 白菜)" value="{{ query }}" style="min-width: 250px;">
+            <button type="submit" class="btn" style="padding: 0.8rem 1.5rem;">重新搜尋</button>
+        </form>
+    </div>
+</div>
+
+{% if recipes %}
+    <p style="margin-bottom: 1.5rem; color: #94a3b8;">為您找到 {{ recipes|length }} 份包含上述食材的食譜：</p>
+    <div class="recipe-grid">
+        {% for recipe in recipes %}
+            <div class="glass-card">
+                <h3 style="margin-top: 0; font-size: 1.5rem;">
+                    <a href="{{ url_for('recipes.detail', recipe_id=recipe.id) }}" style="color: var(--text-color); text-decoration: none;">
+                        {{ recipe.title }}
+                    </a>
+                </h3>
+                
+                <p style="color: #cbd5e1; line-height: 1.6; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;">
+                    {{ recipe.steps[:100] }}{% if recipe.steps|length > 100 %}...{% endif %}
+                </p>
+                <div class="recipe-meta">
+                    <!-- 若用到 Recipe.search_by_ingredients 回傳的 match_count 可以加上這個 -->
+                    {% if recipe.match_count %}
+                        <span style="color: var(--accent);">✔ 包含 {{ recipe.match_count }} 種搜尋的食材</span>
+                    {% else %}
+                        <span>分享時間：{{ recipe.created_at[:10] }}</span>
+                    {% endif %}
+                    
+                    <a href="{{ url_for('recipes.detail', recipe_id=recipe.id) }}" style="color: var(--primary); text-decoration: none; font-weight: 600;">閱讀全文 →</a>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <div class="glass-card text-center" style="padding: 4rem 2rem;">
+        <h3 style="color: #94a3b8;">糟糕！找不到符合的食譜。</h3>
+        <p>目前還沒有人用這些食材建立過食譜，您可以試著替換其他的食材關鍵字。</p>
+        <a href="{{ url_for('main.index') }}" class="btn mt-4">回到首頁</a>
+    </div>
+{% endif %}
+{% endblock %}

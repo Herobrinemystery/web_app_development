@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block title %}登入 - RecipeVault{% endblock %}
+
+{% block content %}
+<div class="auth-wrapper glass-card">
+    <div class="auth-header">
+        <h1>歡迎回來</h1>
+        <p>登入以檢視與管理您的個人食譜寶庫</p>
+    </div>
+    
+    <form method="POST" action="{{ url_for('auth.login') }}">
+        <div class="form-group">
+            <label for="username">帳號名稱</label>
+            <input type="text" id="username" name="username" class="form-control" required autofocus>
+        </div>
+        
+        <div class="form-group">
+            <label for="password">密碼</label>
+            <input type="password" id="password" name="password" class="form-control" required>
+        </div>
+        
+        <button type="submit" class="btn btn-block mt-4">立即登入</button>
+    </form>
+    
+    <div class="text-center mt-4">
+        <p style="color: #cbd5e1;">還沒有帳號嗎？ <a href="{{ url_for('auth.register') }}" style="color: var(--primary); text-decoration: none; font-weight: 500;">免費註冊一個</a></p>
+    </div>
+</div>
+{% endblock %}

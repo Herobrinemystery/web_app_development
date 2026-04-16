@@ -51,10 +51,41 @@ class User:
         return users
 
     @staticmethod
+    def update(user_id, data):
+        """更新使用者資料"""
+        try:
+            conn = get_db_connection()
+            # 依據傳入的 data 組合 SQL (例如更新 role 或是 password_hash)
+            fields = []
+            values = []
+            for k, v in data.items():
+                fields.append(f"{k} = ?")
+                values.append(v)
+            
+            if not fields:
+                return False
+                
+            values.append(user_id)
+            query = f"UPDATE users SET {', '.join(fields)} WHERE id = ?"
+            
+            conn.execute(query, tuple(values))
+            conn.commit()
+            conn.close()
+            return True
+        except Exception as e:
+            print(f"Error updating user: {e}")
+            return False
+
+    @staticmethod
     def delete(user_id):
         """刪除使用者"""
-        conn = get_db_connection()
-        conn.execute('DELETE FROM users WHERE id = ?', (user_id,))
-        conn.commit()
-        conn.close()
-        return True
+        try:
+            conn = get_db_connection()
+            conn.execute('DELETE FROM users WHERE id = ?', (user_id,))
+            conn.commit()
+            conn.close()
+            return True
+        except Exception as e:
+            print(f"Error deleting user: {e}")
+            return False
+

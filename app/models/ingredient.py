@@ -46,3 +46,30 @@ class Ingredient:
         ingredients = conn.execute('SELECT * FROM ingredients WHERE name LIKE ?', (f'%{keyword}%',)).fetchall()
         conn.close()
         return ingredients
+
+    @staticmethod
+    def update(ingredient_id, data):
+        """更新食材"""
+        try:
+            conn = get_db_connection()
+            if 'name' in data:
+                conn.execute('UPDATE ingredients SET name = ? WHERE id = ?', (data['name'], ingredient_id))
+                conn.commit()
+            conn.close()
+            return True
+        except Exception as e:
+            print(f"Error updating ingredient: {e}")
+            return False
+
+    @staticmethod
+    def delete(ingredient_id):
+        """刪除食材"""
+        try:
+            conn = get_db_connection()
+            conn.execute('DELETE FROM ingredients WHERE id = ?', (ingredient_id,))
+            conn.commit()
+            conn.close()
+            return True
+        except Exception as e:
+            print(f"Error deleting ingredient: {e}")
+            return False

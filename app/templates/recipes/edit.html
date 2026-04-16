@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% block title %}編輯食譜 - {{ recipe.title }}{% endblock %}
+
+{% block content %}
+<div class="glass-card" style="max-width: 800px; margin: 0 auto;">
+    <div class="auth-header" style="text-align: left; margin-bottom: 2rem; display: flex; justify-content: space-between; align-items: flex-start;">
+        <div>
+            <h2 style="margin: 0;">編輯食譜</h2>
+            <p style="color: #94a3b8; font-size: 0.95rem;">正在修改：{{ recipe.title }}</p>
+        </div>
+        
+        <!-- 刪除按鈕 (獨立的表單) -->
+        <form method="POST" action="{{ url_for('recipes.delete_recipe', recipe_id=recipe.id) }}" onsubmit="return confirm('確定要永久刪除這份食譜嗎？此動作無法復原！');">
+            <button type="submit" class="btn" style="background: rgba(239, 68, 68, 0.2); color: #f87171; border: 1px solid var(--error);">刪除食譜</button>
+        </form>
+    </div>
+    
+    <form method="POST" action="{{ url_for('recipes.update_recipe', recipe_id=recipe.id) }}">
+        <div class="form-group">
+            <label for="title">食譜名稱 <span style="color: var(--error);">*</span></label>
+            <input type="text" id="title" name="title" class="form-control" required value="{{ recipe.title }}">
+        </div>
+        
+        <div class="form-group">
+            <label for="ingredients">所需食材</label>
+            <input type="text" id="ingredients" name="ingredients" class="form-control" value="{{ ingredients_str }}" placeholder="請以逗號分隔，例如：豬肉, 醬油, 冰糖, 蔥">
+            <small style="color: #94a3b8; display: block; margin-top: 0.5rem;">輸入食材能夠讓其他人透過「找食譜」功能更容易發掘這道菜！</small>
+        </div>
+        
+        <div class="form-group">
+            <label for="steps">製作步驟 <span style="color: var(--error);">*</span></label>
+            <textarea id="steps" name="steps" class="form-control" rows="10" required>{{ recipe.steps }}</textarea>
+        </div>
+        
+        <div class="form-group" style="display: flex; align-items: center; gap: 0.75rem; margin-top: 2rem;">
+            <input type="checkbox" id="is_public" name="is_public" style="width: 1.25rem; height: 1.25rem; cursor: pointer;" {% if recipe.is_public %}checked{% endif %}>
+            <label for="is_public" style="margin: 0; cursor: pointer; user-select: none;">公開這份食譜</label>
+        </div>
+        
+        <hr style="border-color: var(--glass-border); margin: 2rem 0;">
+        
+        <div style="display: flex; justify-content: flex-end; gap: 1rem;">
+            <a href="{{ url_for('recipes.detail', recipe_id=recipe.id) }}" class="btn" style="background: rgba(255, 255, 255, 0.1);">取消返回</a>
+            <button type="submit" class="btn" style="background: var(--accent);">儲存變更</button>
+        </div>
+    </form>
+</div>
+{% endblock %}

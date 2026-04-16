@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block title %}我的食譜 - RecipeVault{% endblock %}
+
+{% block content %}
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+    <h2>我的食譜專區</h2>
+    <a href="{{ url_for('recipes.new_recipe') }}" class="btn" style="background: var(--accent);">+ 新增食譜</a>
+</div>
+
+{% if recipes %}
+    <div class="recipe-grid">
+        {% for recipe in recipes %}
+            <div class="glass-card">
+                <h3 style="margin-top: 0;">
+                    <a href="{{ url_for('recipes.detail', recipe_id=recipe.id) }}" style="color: var(--text-color); text-decoration: none;">
+                        {{ recipe.title }}
+                    </a>
+                </h3>
+                <div style="margin-top: 1rem; margin-bottom: 1.5rem;">
+                    {% if recipe.is_public %}
+                        <span style="background: rgba(16, 185, 129, 0.2); color: #34d399; padding: 0.25rem 0.75rem; border-radius: 99px; font-size: 0.875rem;">公開</span>
+                    {% else %}
+                        <span style="background: rgba(255, 255, 255, 0.1); color: #cbd5e1; padding: 0.25rem 0.75rem; border-radius: 99px; font-size: 0.875rem;">私有</span>
+                    {% endif %}
+                </div>
+                
+                <p style="color: #cbd5e1; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
+                    {{ recipe.steps }}
+                </p>
+                
+                <div class="recipe-meta" style="border-top: 1px solid var(--glass-border); padding-top: 1rem; margin-top: 1rem;">
+                    <span>{{ recipe.created_at[:10] }}</span>
+                    <a href="{{ url_for('recipes.edit_recipe', recipe_id=recipe.id) }}" style="color: var(--primary); text-decoration: none;">編輯 / 管理 →</a>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <div class="glass-card text-center" style="padding: 4rem 2rem;">
+        <h3 style="color: #94a3b8;">您還沒建立任何食譜喔！</h3>
+        <p>趕快將您的拿手好菜記錄下來吧。</p>
+        <a href="{{ url_for('recipes.new_recipe') }}" class="btn mt-4">開始撰寫第一份食譜</a>
+    </div>
+{% endif %}
+{% endblock %}
